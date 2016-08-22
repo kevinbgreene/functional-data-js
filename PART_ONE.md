@@ -1,4 +1,4 @@
-# Function Data Structures in JavaScript
+# Function Data Structures in JavaScript: The Basics
 
 
 ## Once Upon a Time
@@ -366,7 +366,7 @@ toArray(list); // -> [1, 2, 3, 4]
 toArray(reverse); // -> [4, 3, 2, 1]
 ```
 
-What other operations to we commonly want to perform on lists? Getting the nth value of a List is pretty common.
+What other operations do we commonly want to perform on lists? Getting the nth value of a List is pretty common.
 
 ```
 function get(n, list) {
@@ -382,7 +382,7 @@ function get(n, list) {
 }
 ```
 
-I told you, we would eventually get around to using conditionals. We've been able to do a lot with only functions. We could certainly do more, but I'm not that masochistic. Simple enough, we just keep decrementing n until it reaches 0 then we know we're at the correct node.
+I told you, we would eventually get around to using conditionals. We've been able to do a lot with only functions. We could certainly do more, but I'm not that masochistic. Simple enough, we just keep decrementing n until it reaches 0 then we know we're at the correct node. If we get to an Empty node before n reaches 0 we know the requested index is out-of-bounds.
 
 What follows quickly from this is updating the node at the nth index. Because we are again non-destructively updating our Lists, we are creating a new List with the given node updated. We accomplish this by copying every node until we reach the given index and then use any remaining nodes as the tail of our new List, similar to how we performed concatenation.
 
@@ -406,7 +406,7 @@ We could obviously fill out all of the common functions for Lists. However, I th
 
 ## Binary Search Trees
 
-Binary Search Trees are going to be the last data structure we look at in this post. Following on from Pairs and Lists we are just going to be adding a little bit of complexity to what we have already seen. A node in a List is singly-linked to the rest of the List. A node in a binary tree is doubly-linked. All nodes in the left sub tree have values less than the current node and all values in the right sub tree have values greater than the current node. For this implementation we are going to say all values in the left sub tree are less than or equal to the value of the current node. As with Lists we are going to have a special type to represent an empty tree.
+Binary Search Trees are going to be the last data structure we look at in this post. Following on from Pairs and Lists we are just going to be adding a little bit of complexity to what we have already seen. A node in a List is singly-linked to the rest of the List. A node in a binary tree is doubly-linked. All nodes in the left sub-tree have values less than the current node and all values in the right sub-tree have values greater than the current node. For this implementation we are going to say all values in the left sub-tree are less than or equal to the value of the current node. As with Lists we are going to have a special type to represent an empty tree.
 
 ```
 function Tree(val, left, right) {
@@ -455,7 +455,7 @@ const tree = insert(4, Empty);
 toObject(tree); // -> { key : 4, left : 'Empty', right : 'Empty' }
 ```
 
-You will notice this code copies nodes on the path to the new node. Nodes that are not on the insertion path are shared with the new Tree, returned as a result of this insertion, an the old Tree. Just look at the first conditional in the destructureTree branch. The value to insert is less than or equal to the current. The right sub-tree can be shared. The opposite is true if the value is greater.
+You will notice this code copies nodes on the path to the new node. Nodes that are not on the insertion path are shared with the new Tree, returned as a result of this insertion, and the old Tree. Just look at the first conditional in the destructureTree branch. The value to insert is less than or equal to the current. The right sub-tree is going to go unaltered. It can be shared. The inverse is true if the value is greater.
 
 The next thing we want to do with a binary search tree is to search. We will start with the simplest search. Just find the minimum (or maximum) value in our Tree. In the case of finding the minimum value we just keep moving left until we reach the end. We do so by recursively calling the min function on the left child node until we reach a left child node that has an empty left child. If you were to write this code in an object oriented language you would check for an empty left child node by checking a property on the node object. Something like node.left === null. Here we need to destructure the left node to see if it has an empty left child. If it does have an empty left node we return the current node we're on, else we recurse into the left node.
 
@@ -493,7 +493,7 @@ function search(toFind, tree) {
 }
 ```
 
-Deleting values is always where binary search trees get a little hairy to implement. However, in a functional data structure deleting values is much more straight forward.
+Deleting values is always where binary search trees get a little hairy to implement. However, in a functional data structure deleting values is much more straight forward. Deleting is much more straight forward because we don't have to worry about maintaining the state of our data structure. We are copying all the pieces we are altering. We can be more declarative about saying, 'This is what this structure should look like now'. We will start with removing the minimum value in a Tree. We just need to move left until we reach a node with an empty left child. We then replace that node with its right child.
 
 ```
 function removeMin(tree) {
@@ -509,7 +509,9 @@ function removeMin(tree) {
 }
 ```
 
-remove
+If you look back at our code for finding the minimum value you'll see that this is almost identical. We are just constructing our new data structure as we recurse down to the minimum node. Once a node has no left child, which we know when the inner destructureEmpty is called, we just return the right node. If the initial Tree we pass in is an Empty tree we just return Empty.
+
+Following on from this we can write a function to delete an arbitrary value from a Tree. This again looks very much like our generic search function, we just build up a new Tree as we recurse down, moving left or right depending on if the current value is less than or greater than the value of the current node. However, what happens when we find the node to remove? We need to fill in the hole left by removing a node. To keep our remove function clean, we write a helper function to replace the removed node. We replace the removed node with the minimum node in the right sub-tree of the node we are removing. The minimum node in the right sub-tree is guaranteed to not break the correctness of our tree. It will be greater than all of the nodes in the left sub-tree of the node we are removing and it will be smaller than all of the nodes in what remains of the right sub-tree of the node we are removing. We take the value of the minimum node in the right sub-tree and create a new node. This new node will use the left sub-tree of the node we are removing. Again, sharing the node with the tree we are deleting from. It will also use the right sub-tree of the node we are removing. However, for the right sub-tree we need to remove the minimum so we are not including the same node twice.
 
 ```
 function replaceRemoved(tree, left, right) {
@@ -534,3 +536,70 @@ function remove(toRemove, tree) {
   });
 }
 ```
+
+If you have written this in an object-oriented language, you will notice this is much less code. At each step we are able to be very declarative about what we want our tree to look like at that point.
+
+In our functional implementation of Lists we noted we were actually implementing a linked list and many of our operations took time proportional to the size of the list. For random input functional binary search trees will still offer logarithmic inserts, deletes and searches. I'm going to follow this post up fairly soon with a look at functional balanced binary search trees, specifically red/black trees. But this was our last data structure for today.
+
+
+## A Return to Arithmetic
+
+The first thing we covered were Church numerals. Almost certainly the least practical thing we looked at, but we're going to close for today and look at how we can do subtraction on Church numerals. This is an example of how far you can take computation with nothing more than functions. Once we can represent numbers and the operations on numbers we can support anything.
+
+We are going to solve the problem of subtraction by creating a decrement function and then applying it some n number of times. If we define a number in Church numerals as the number of times a function is applied, how do we get the previous application? The function we are applying must maintain its previous state.
+
+In our toNumber function we used the function application of our Church numerals to translate them into Arabic numerals. We could use this function application to perform operations between Church numerals.
+
+We wrote our add function like this:
+
+```
+function add(m, n) {
+  return function(fn, x) {
+    return m(fn, n(fn, x));
+  };
+}
+```
+
+The n numeral applies fn n times and then m applies it m more times. However, we also wrote a increment function we call succ.
+
+```
+function succ(num) {
+  return function(fn, x) {
+    return fn(num(fn, x));
+  };
+}
+```
+
+This just applies fn once extra time to num. We could write an addition function in terms of the succ function. Increment the m numeral sum n number of times.
+
+```
+function add(m, n) {
+  return m(succ, n);
+}
+```
+
+Instead of using another Church numeral as the argument for our function, what if we used a Pair? As we incremented the numeral the first value in the pair would be the previous value and the second value would be the current value. The succ function won't handle this for us, but we can write another function that could operate on Pairs.
+
+```
+function slide(pair) {
+  return Pair(second(pair), succ(second(pair)));
+}
+```
+
+If slide starts with a pair of zeros, Pair(Zero, Zero), successive calls to slide, slide(slide(Pair(Zero, Zero))), will work like the succ function, except the first value will always be one less. Therefore to implement a decrement function we apply slide some n number of times, starting with Pair(Zero, Zero), and take the first value from the returned Pair.
+
+```
+function pred(num) {
+  return first(num(slide, Pair(Zero, Zero)));
+}
+```
+
+Subtraction can now be written in terms of pred the same way we wrote our second attempt at add in terms of succ.
+
+```
+function sub(m, n) {
+  return n(pred, m);
+}
+```
+
+Cool, that's it for this post. As I said I'll follow up sometime soon with an implementation of red/black trees and maybe some other stuff. We'll see.
