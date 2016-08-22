@@ -455,9 +455,9 @@ const tree = insert(4, Empty);
 toObject(tree); // -> { key : 4, left : 'Empty', right : 'Empty' }
 ```
 
-You will notice this code copies nodes on the path to the new node. Nodes that are not on the insertion path are shared with the new Tree, returned as a result of this insertion, an the old Tree.
+You will notice this code copies nodes on the path to the new node. Nodes that are not on the insertion path are shared with the new Tree, returned as a result of this insertion, an the old Tree. Just look at the first conditional in the destructureTree branch. The value to insert is less than or equal to the current. The right sub-tree can be shared. The opposite is true if the value is greater.
 
-Find min
+The next thing we want to do with a binary search tree is to search. We will start with the simplest search. Just find the minimum (or maximum) value in our Tree. In the case of finding the minimum value we just keep moving left until we reach the end. We do so by recursively calling the min function on the left child node until we reach a left child node that has an empty left child. If you were to write this code in an object oriented language you would check for an empty left child node by checking a property on the node object. Something like node.left === null. Here we need to destructure the left node to see if it has an empty left child. If it does have an empty left node we return the current node we're on, else we recurse into the left node.
 
 ```
 function min(tree) {
@@ -473,7 +473,9 @@ function min(tree) {
 }
 ```
 
-Searching
+This code is easily adapted to finding the max by replacing the recursive call with the left node to a recursive call with the right node. I'll leave that out.
+
+How about more generic searching? I want to know if a given value is already in the tree. This follows fairly directly from finding the min or max. Our code just needs a conditional to know to move left or right based on the search value relative to the current value. If we come to an Empty node we return false, otherwise we return true when we land on a node with a value equal to our search value.
 
 ```
 function search(toFind, tree) {
@@ -491,7 +493,7 @@ function search(toFind, tree) {
 }
 ```
 
-remove min
+Deleting values is always where binary search trees get a little hairy to implement. However, in a functional data structure deleting values is much more straight forward.
 
 ```
 function removeMin(tree) {
