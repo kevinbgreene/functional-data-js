@@ -1,0 +1,19 @@
+{
+  "name": "functional-data",
+  "version": "1.0.0",
+  "description": "Functional data structures for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevinbgreene/functional-data-js.git"
+  },
+  "author": "Kevin Greene <hightimesteddy@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevinbgreene/functional-data-js/issues"
+  },
+  "homepage": "https://github.com/kevinbgreene/functional-data-js"
+}
