@@ -10,6 +10,18 @@ function Nil(_, destructureNil) {
   return destructureNil();
 }
 
+function findSize(current, list) {
+  return list(function(head, tail) {
+    return findSize((current + 1), tail);
+  }, function() {
+    return current;
+  });
+}
+
+function size(list) {
+  return findSize(0, list);
+}
+
 function last(list) {
   return head(reverse(list));
 }

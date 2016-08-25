@@ -24,6 +24,14 @@ function search(toFind, tree) {
   });
 }
 
+function value(tree) {
+  return tree(function(val, left, right) {
+    return val;
+  }, function() {
+    throw new Error('Can not get value of Empty tree');
+  });
+}
+
 function min(tree) {
   return tree(function(val, left, right) {
     return left(function(_val, _left, _right) {
@@ -46,6 +54,14 @@ function max(tree) {
   }, function() {
     throw new Error('No max node in empty tree');
   });
+}
+
+function minValue(tree) {
+  return value(min(tree));
+}
+
+function maxValue(tree) {
+  return value(max(tree));
 }
 
 function insert(toInsert, tree) {
