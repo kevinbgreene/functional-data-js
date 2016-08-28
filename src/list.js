@@ -62,48 +62,48 @@ function get(n, list) {
   });
 }
 
-function update(list, i, val) {
+function update(i, val, list) {
   return list(function(head, tail) {
     if (i === 0) {
       return List(val, tail);
     } else {
-      return List(head, update(tail, (i - 1), val));
+      return List(head, update((i - 1), val, tail));
     }
   }, function() {
     throw new Error('Index requested is outside the bounds of this List');
   });
 }
 
-function map(list, fn) {
+function map(fn, list) {
   return list(function(head, tail) {
-    return List(fn(head), map(tail, fn));
+    return List(fn(head), map(fn, tail));
   }, function() {
     return Nil;
   });
 }
 
-function filter(list, predicate) {
+function filter(predicate, list) {
   return list(function(head, tail) {
     if (predicate(head)) {
-      return List(head, filter(tail, predicate));
+      return List(head, filter(predicate, tail));
     } else {
-      return filter(tail, predicate);
+      return filter(predicate, tail);
     }
   }, function() {
     return Nil;
   });
 }
 
-function foldl(list, acc, fn) {
+function foldl(fn, acc, list) {
   return list(function(head, tail) {
-    return foldl(tail, fn(acc, head), fn);
+    return foldl(fn, fn(acc, head), tail);
   }, function() {
     return acc;
   });
 }
 
-function foldr(list, acc, fn) {
-  return foldl(reverse(list), acc, fn);
+function foldr(fn, acc, list) {
+  return foldl(fn, acc, reverse(list));
 }
 
 function append(val, list) {
